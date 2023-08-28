@@ -21,33 +21,11 @@ exports.spendType = [
   "subscription",
 ];
 exports.commands = {
-  "hello": "Register and get a username",
-  "spent": `Record a transaction, example- */spent 5000 groceries*
+  hello: "Register and get a username",
+  spent: `Record a transaction, example- */spent 5000 groceries*
     Note- you can record your spends in the following categories
     (${this.spendType.join(", ")})
-    `
+    `,
 };
-
-exports.findTypeAndAmount = (msg) => {
-  try {
-    let words = msg.split(/\s/);
-    let amt, type;
-    amt = words.find((ele) => ele && !isNaN(ele));
-    words = words.filter(ele => isNaN(ele)).map(ele => ele.toLowerCase());
-    type = words.join("_");
-    if(!amt || !type || !this.spendType.includes(type)) {
-        return {
-            status: false,
-            message: "Invalid command to record transaction"
-        }
-    } else {
-        return {
-            status: true,
-            type,
-            amount: amt
-        }
-    }
-  } catch (error) {
-    throw error;
-  }
-}; 
+exports.MONGO_URI = process.env.MONGO_URI;
+exports.DB_NAME = process.env.DB_NAME;
