@@ -1,18 +1,16 @@
-// const { MongoClient } = require("mongodb");
-// const config = require('../utils/config');
-
-// export const getDbClient = (url) => {
-//   return new MongoClient(url);
-// };
-
-// export const getDbConnection = async () => {
-//   const client = getDbClient(config.MONGO_URI);
-//   await client.connect();
-//   const db = client.db(config.DB_NAME);
-//   return db;
-// };
-
+const MongoClient = require("mongodb");
+const config = require('../utils/config');
 const mongoose = require("mongoose");
+const getDbClient = (url) => {
+  return new MongoClient(url);
+};
+
+const getDbConnection = async () => {
+  const client = getDbClient(config.MONGO_URI);
+  await client.connect();
+  const db = client.db(config.DB_NAME);
+  return db;
+};
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
@@ -28,5 +26,6 @@ const connectDB = async () => {
 };
 
 module.exports = {
-    connectDB
-}
+  connectDB,
+  getDbConnection
+};
