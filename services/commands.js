@@ -16,7 +16,7 @@ class BotHandler {
     this.bot.sendMessage(chatId, config.welcome);
   };
   recordSpend = async (msg, match) => {
-    var chatId = msg.chat.id;
+    const chatId = msg.chat.id;
     let resp = match[1];
     try {
       const { status, amount, type, message } =
@@ -46,6 +46,19 @@ class BotHandler {
       this.bot.sendMessage(chatId, "Something went wrong");
     }
   };
+  getExpenses = async (msg, match) => {
+    const chatId = msg?.chat?.id;
+    if(!chatId) {
+      this.bot.sendMessage(chatId, "Something went wrong");
+    }
+    try {
+      const data = await Expenses.getExpensesByChatId(chatId);
+      this.bot.sendMessage(chatId, "Data fetched");
+    } catch (error) {
+      console.error(error);
+      this.bot.sendMessage(chatId, "Something went wrong");
+    }
+  }
 }
 
 module.exports = BotHandler;

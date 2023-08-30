@@ -19,5 +19,5 @@ bot.onText(/\/hello/, BotHandler.registerUser);
 bot.onText(/\/help/, (msg, match) => {
   bot.sendMessage(msg.chat.id, helpMessage);
 });
-
+bot.onText(/\/getall/, BotHandler.getExpenses);
 bot.onText(/\/spent(.+)/, BotHandler.recordSpend);

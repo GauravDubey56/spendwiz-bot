@@ -1,4 +1,4 @@
-const MongoClient = require("mongodb");
+const MongoClient = require("mongodb").MongoClient;
 const config = require('../utils/config');
 const mongoose = require("mongoose");
 const getDbClient = (url) => {
