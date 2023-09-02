@@ -1,5 +1,5 @@
 exports.EXPENSE_USER = {
-  from: "user",
+  from: "users",
   localField: "UserId",
   foreignField: "_id",
   as: 'user'

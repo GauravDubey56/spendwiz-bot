@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 const expenseSchema = new Schema(
   {
     Category: { type: String, required: true },
@@ -11,6 +11,9 @@ const expenseSchema = new Schema(
   },
   { timestamps: true }
 );
-
 const Expense = model("expenses", expenseSchema);
+Expense.addExpense = async (data) => {
+  data.UserId = new Types.ObjectId(data.UserId);
+  return await Expense.create(data);
+}
 module.exports = Expense;

@@ -1,7 +1,8 @@
 const db = require("../models");
 const DbClient = require("../db/connect");
 const Agrgt = require("../db/aggregates");
-const addExpense = async ({ amount, category, chatId }) => {
+const moment = require("moment/moment");
+const addExpense = async ({ amount, category, chatId, message }) => {
   chatId = chatId.toString();
   const resp = {};
   try {
@@ -23,8 +24,9 @@ const addExpense = async ({ amount, category, chatId }) => {
       Amount: amount,
       Category: category,
       UserId: userId,
+      Remarks: message,
     };
-    await db.expenses.create(expense);
+    await db.expenses.addExpense(expense);
     resp.status = 200;
     resp.message = "New expense recorded";
     return resp;
@@ -41,6 +43,18 @@ const getExpensesByChatId = async (chatId, filters = {}) => {
     {
       $lookup: Agrgt.EXPENSE_USER,
     },
+    {
+      $unwind: '$user'
+    },
+    {
+      $project: {
+        _id: 0,
+        Category: 1,
+        Amount: 1,
+        Remarks: 1,
+        createdAt: 1
+      }
+    }
   ];
   if (chatId) {
     // pipeline.push({
@@ -49,10 +63,19 @@ const getExpensesByChatId = async (chatId, filters = {}) => {
     //   },
     // });
   }
-  const result  = await db.expenses.aggregate.lookup(Agrgt.EXPENSE_USER)
+  const result  = await db.expenses.aggregate(pipeline)
   return result;
 };
+const toMessage = (txns) => {
+  let msg = "";
+  txns.forEach(txn =>{
+    msg += '\n';
+    msg += `${txn.Amount || ""} ${txn.Category || ""} ${txn.createdAt ? moment(txn.createdAt).format('DD MMM hh:mm a'): ""} ${txn.Remarks || ""}`;
+  })
+  return msg;
+}
 module.exports = {
   addExpense,
   getExpensesByChatId,
+  toMessage
 };
