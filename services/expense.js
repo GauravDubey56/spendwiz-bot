@@ -43,26 +43,23 @@ const getExpensesByChatId = async (chatId, filters = {}) => {
     {
       $lookup: Agrgt.EXPENSE_USER,
     },
-    {
-      $unwind: '$user'
-    },
-    {
-      $project: {
-        _id: 0,
-        Category: 1,
-        Amount: 1,
-        Remarks: 1,
-        createdAt: 1
-      }
-    }
   ];
   if (chatId) {
-    // pipeline.push({
-    //   $match: {
-    //     user: { ChatId: chatId },
-    //   },
-    // });
+    pipeline.push({
+      $match: {
+        "user.ChatId": `${chatId}`,
+      },
+    });
   }
+  pipeline.push({
+    $project: {
+      _id: 0,
+      Category: 1,
+      Amount: 1,
+      Remarks: 1,
+      createdAt: 1,
+    },
+  });
   const result  = await db.expenses.aggregate(pipeline)
   return result;
 };
