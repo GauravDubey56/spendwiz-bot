@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const htmlPDF = require("html-pdf");
-const fs = require('fs')
+const fs = require('fs');
+const { generateReportHtml } = require("./report-templates");
 const getBase64PdfFromHtml = async (htmlData) => {
   var htmlElement = htmlData;
   const fileName = `SPENDWIZ_REPORT_${Date.now().toString()}`
@@ -23,7 +24,7 @@ const getBase64PdfFromHtml = async (htmlData) => {
   const contents = fs.readFileSync(`./${fileName}.pdf`, {
     encoding: "base64",
   });
-  fs.unlinkSync(`./${fileName}.pdf`);
+  // fs.unlinkSync(`./${fileName}.pdf`);
   fs.unlinkSync(`./${fileName}.html`);
   return contents;
 };
@@ -107,7 +108,9 @@ async function generateExpensePDF(expenses) {
       </body>
     </html>
   `;
-  getBase64PdfFromHtml(content)
+  // getBase64PdfFromHtml(content)
+  const newContent = generateReportHtml(expenses);
+  getBase64PdfFromHtml(newContent)
   console.log("PDF created successfully");
 }
 
